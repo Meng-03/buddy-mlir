@@ -2,5 +2,4 @@
 arg0.data
 
 # model mlir file
-forward.mlir
-subgraph0.mlir
+llama.mlir

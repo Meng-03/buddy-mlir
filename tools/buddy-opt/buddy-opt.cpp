@@ -47,6 +47,8 @@
 #include "Gemmini/GemminiOps.h"
 #include "Sche/ScheDialect.h"
 #include "Sche/ScheOps.h"
+#include "MMA/MMADialect.h"//新添加======================
+#include "MMA/MMAOps.h"//新添加======================
 
 namespace mlir {
 namespace buddy {
@@ -69,7 +71,7 @@ void registerLowerGemminiPass();
 void registerLowerLinalgToGemminiPass();
 void registerDeviceSchedulePass();
 void registerLowerSchePass();
-void registerFuncBufferizeDynamicOffsetPass();
+void registerLowerMMAPass();//新添加======================
 } // namespace buddy
 } // namespace mlir
 
@@ -84,6 +86,7 @@ int main(int argc, char **argv) {
   mlir::buddy::registerLowerBudPass();
   mlir::buddy::registerLowerDIPPass();
   mlir::buddy::registerLowerDAPPass();
+  mlir::buddy::registerLowerMMAPass();//新添加======================
   // Register Vectorization of DAP Dialect.
   mlir::buddy::registerDAPVectorizePass();
   mlir::buddy::registerLowerRVVPass();
@@ -99,13 +102,13 @@ int main(int argc, char **argv) {
   mlir::buddy::registerTransposeOptimizationPass();
   mlir::buddy::registerConvOptimizePass();
   mlir::buddy::registerDeviceSchedulePass();
-  mlir::buddy::registerLowerSchePass();
-  mlir::buddy::registerFuncBufferizeDynamicOffsetPass();
+  mlir::buddy::registerLowerSchePass();;
 
   mlir::DialectRegistry registry;
   // Register all MLIR core dialects.
   registerAllDialects(registry);
   mlir::registerAllExtensions(registry);
+  // 在这里向mlir中注册新dialect===================================================
   // Register dialects in buddy-mlir project.
   // clang-format off
   registry.insert<buddy::bud::BudDialect,
@@ -114,7 +117,9 @@ int main(int argc, char **argv) {
                   buddy::rvv::RVVDialect,
                   buddy::vector_exp::VectorExpDialect,
                   buddy::gemmini::GemminiDialect,
-                  buddy::sche::ScheDialect>();
+                  buddy::sche::ScheDialect,
+                  buddy::mma::MMADialect
+                  >();
   // clang-format on
 
   return mlir::failed(

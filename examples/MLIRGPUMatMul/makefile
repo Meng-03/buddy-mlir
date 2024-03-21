@@ -94,4 +94,21 @@ convert-parallel-loops-to-gpu:
 matmul-gpu-lower:
 	@${BUDDY_OPT} matmul-gpu.mlir \
 		--lower-mma -o mmgpu-to-linalg.mlir
+matmul-gpu-kernel-outlining:
+	@${BUDDY_OPT} mmgpu-to-linalg.mlir \
+		-gpu-kernel-outlining -o mmgpu-kernel-outline.mlir
 
+matmul-gpu-test-lower:
+	@${MLIR_OPT} mmgpu-test.mlir | \
+	${MLIR_OPT}	--pass-pipeline="builtin.module(nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" | \
+	${MLIR_OPT} -convert-linalg-to-loops -lower-affine -convert-scf-to-cf | \
+	${MLIR_OPT} -convert-vector-to-llvm -finalize-memref-to-llvm -convert-arith-to-llvm -convert-scf-to-cf --convert-vector-to-llvm --convert-func-to-llvm -o test_1.mlir
+
+matmul-gpu-test-run:
+	${MLIR_CPU_RUNNER}  test_1.mlir -entry-point-result=void -shared-libs=${MLIR_CUDA_RUNTIME} -shared-libs=${MLIR_RUNNER_UTILS}
+
+
+gpu-test-1:               
+	@${MLIR_OPT} test-origin.mlir --pass-pipeline="builtin.module(gpu-kernel-outlining,nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" -o test-origin-lower.mlir 
+gpu-test-run:
+	${MLIR_CPU_RUNNER}  test-origin-lower.mlir -entry-point-result=void -shared-libs=${MLIR_RUNNER_UTILS} -shared-libs=${MLIR_CUDA_RUNTIME}
