@@ -112,3 +112,26 @@ gpu-test-1:
 	@${MLIR_OPT} test-origin.mlir --pass-pipeline="builtin.module(gpu-kernel-outlining,nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" -o test-origin-lower.mlir 
 gpu-test-run:
 	${MLIR_CPU_RUNNER}  test-origin-lower.mlir -entry-point-result=void -shared-libs=${MLIR_RUNNER_UTILS} -shared-libs=${MLIR_CUDA_RUNTIME}
+
+mmgpu-benchmark-lower:
+	@${MLIR_OPT} mmgpu-test-benchmark.mlir | \
+	${MLIR_OPT} --pass-pipeline="builtin.module(nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" | \
+	${MLIR_OPT} -convert-vector-to-llvm | \
+	${MLIR_OPT} -finalize-memref-to-llvm | \
+	${MLIR_OPT} -convert-arith-to-llvm | \
+	${MLIR_OPT} -convert-scf-to-cf | \
+	${MLIR_OPT} -convert-func-to-llvm | \
+	${MLIR_OPT} -o mmgpu-benchmark-lower.mlir
+
+mmgpu-benchmark-run:
+	${MLIR_CPU_RUNNER}  mmgpu-benchmark-lower.mlir -entry-point-result=void -shared-libs=${MLIR_CUDA_RUNTIME} -shared-libs=${MLIR_RUNNER_UTILS} -shared-libs=${MLIR_C_RUNNER_UTILS}
+
+# ${MLIR_CPU_RUNNER} ${OPT_FLAG} -e main -entry-point-result=void -shared-libs=${MLIR_RUNNER_UTILS} -shared-libs=${MLIR_C_RUNNER_UTILS}
+# ${MLIR_OPT} --pass-pipeline="builtin.module(nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" | \
+# ${MLIR_OPT} -convert-vector-to-llvm | \
+# ${MLIR_OPT} -finalize-memref-to-llvm | \
+# ${MLIR_OPT} -convert-arith-to-llvm | \
+# ${MLIR_OPT} -convert-scf-to-cf | \
+# ${MLIR_OPT} -convert-func-to-llvm | \
+# ${MLIR_OPT} -reconcile-unrealized-casts -o mmgpu-benchmark-lower.mlir
+	      
