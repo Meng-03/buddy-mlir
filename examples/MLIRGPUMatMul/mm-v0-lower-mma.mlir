@@ -21,5 +21,4 @@ module {
     return
   }
 }
-//dialect: func, linalg, memref, arith
 
