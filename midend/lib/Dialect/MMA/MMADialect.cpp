@@ -47,14 +47,14 @@ void MMADialect::initialize() {
 #define GET_OP_LIST
 #include "MMA/MMAOps.cpp.inc"
       >();
-  addAttributes<
-#define GET_ATTRDEF_LIST
-#include "MMA/MMAOpsAttributes.cpp.inc"
-      >();
+//   addAttributes<
+// #define GET_ATTRDEF_LIST
+// #include "MMA/MMAOpsAttributes.cpp.inc"
+//       >();
 }
 
 //我这里应该没定义Enums
-#include "MMA/MMAOpsEnums.cpp.inc"
+// #include "MMA/MMAOpsEnums.cpp.inc"
 
-#define GET_ATTRDEF_CLASSES
-#include "MMA/MMAOpsAttributes.cpp.inc"
+// #define GET_ATTRDEF_CLASSES
+// #include "MMA/MMAOpsAttributes.cpp.inc"
