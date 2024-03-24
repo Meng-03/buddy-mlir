@@ -4,7 +4,7 @@ module{
     func.func private @printMemrefF32(%ptr : memref<*xf32>)
     func.func @matmul(%a : memref<4x4xf32>, %b : memref<4x4xf32>, %c : memref<4x4xf32>){
         //这里的" %c , : "后续记得把,删除，dialect op中目前已经修改，但是暂未构建
-        mma.matmul %a, %b, %c , : memref<4x4xf32> , memref<4x4xf32> , memref<4x4xf32>  
+        mma.matmul %a, %b, %c : memref<4x4xf32> , memref<4x4xf32> , memref<4x4xf32>  
         return
     }
     func.func @main(){

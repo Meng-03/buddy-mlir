@@ -60,7 +60,8 @@ mm-v0-runner:
 
 # **************************************** gpu-test **************************************** #
 gpu-test-lower:               
-	@${MLIR_OPT} gpu-test.mlir --pass-pipeline="builtin.module(gpu-kernel-outlining,nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" -o gpu-test-lower.mlir 
+	@${MLIR_OPT} gpu-test.mlir | \
+	${MLIR_OPT} --pass-pipeline="builtin.module(gpu-kernel-outlining,nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" -o gpu-test-lower.mlir 
 gpu-test-run:
 	${MLIR_CPU_RUNNER}  gpu-test-lower.mlir -entry-point-result=void -shared-libs=${MLIR_RUNNER_UTILS} -shared-libs=${MLIR_CUDA_RUNTIME}
 
