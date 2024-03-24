@@ -73,7 +73,7 @@ public:
         Value N = rewriter.create<memref::DimOp>(loc, B, 1);
         Value K = rewriter.create<memref::DimOp>(loc, B, 0);
 
-        
+        auto iLoop = builder.create<>
 
         rewriter.eraseOp(op);
         return success();
