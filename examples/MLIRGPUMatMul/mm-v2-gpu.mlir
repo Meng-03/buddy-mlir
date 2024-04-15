@@ -2,6 +2,7 @@ module attributes {gpu.container_module} {
   func.func @main() {
     %c0 = arith.constant 0 : index 
     %c1 = arith.constant 1 : index  
+    %c32 = arith.constant 32 : index
     %c1024 = arith.constant 1024 : index 
     // %c16 = arith.constant 16 : index 
     %f0 = arith.constant 0.0 : f16
@@ -38,7 +39,8 @@ module attributes {gpu.container_module} {
     gpu.func @kernel1(%arg0 : memref<1024x1024xf16>, %arg1 : memref<1024x1024xf16>, %arg2 : memref<1024x1024xf32>) kernel {
       %c0 = arith.constant 0 :index
       %c16 = arith.constant 16 : index 
-      // %sgid = gpu.subgroup_id : index
+      // %numSg = gpu.num_subgroups : index
+      %sgId = gpu.subgroup_id : index
       // %sgId = gpu.subgroup_id : index
       // gpu.printf "gpu.subgroup_id %d\n" %sgId : index
       %A_1 = gpu.subgroup_mma_load_matrix %arg0[%c0, %c0] {leadDimension = 32 : index} : memref<1024x1024xf16> -> !gpu.mma_matrix<16x16xf16, "AOp">

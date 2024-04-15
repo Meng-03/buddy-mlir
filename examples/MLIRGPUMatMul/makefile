@@ -110,12 +110,12 @@ mmgpu-benchmark-run:
 # ********************** matmul gpu test (tensor core)*************************************** #
 mm-v2-gpu-lower:
 	@${MLIR_OPT} mm-v2-gpu.mlir | \
-	${MLIR_OPT}	--pass-pipeline="builtin.module(nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" -o mm-v2-gpu-bin.mlir
+	${MLIR_OPT}	--pass-pipeline="builtin.module(nvvm-attach-target{chip=sm_70 O=3},gpu.module(convert-gpu-to-nvvm),gpu-to-llvm, gpu-module-to-binary)" -o mm-v2-gpu-bin-test_2.mlir
 # ${MLIR_OPT} -convert-linalg-to-loops -lower-affine -convert-scf-to-cf | \
 # ${MLIR_OPT} -convert-vector-to-llvm -finalize-memref-to-llvm -convert-arith-to-llvm -convert-scf-to-cf --convert-vector-to-llvm --convert-func-to-llvm -o mm-v1-gpu-runable.mlir
 mm-v2-gpu-lower-test:
 	@${MLIR_OPT} mm-v2-gpu-bin.mlir | \
-	${MLIR_OPT} -convert-scf-to-cf -convert-func-to-llvm -o mm-v2-gpu-test_1.mlir
+	${MLIR_OPT} -convert-scf-to-cf -convert-func-to-llvm -o mm-v2-gpu-test_2.mlir
 mm-v2-gpu-run:
 	${MLIR_CPU_RUNNER}  mm-v2-gpu-test.mlir -entry-point-result=void -shared-libs=${MLIR_CUDA_RUNTIME} -shared-libs=${MLIR_RUNNER_UTILS}
 

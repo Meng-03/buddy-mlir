@@ -49,13 +49,12 @@ using namespace vector;
 
 namespace {
     //这里引用的MatMulOp这个名字 是在哪里定义的
-class MMAmatmultestLowering : public OpRewritePattern<mma::MatMulOp>{
+class MMAgpuOptimizePattern : public ConversionPattern{
 public:
-    //C++11引入的构造函数继承特性的应用，允许派生类通过简洁的语法重用基类构造函数，
-    //而不需要在派生类中显式定义相同的构造函数
-    using OpRewritePattern<mma::MatMulOp>::OpRewritePattern;
-
-    LogicalResult matchAndRewrite(mma::MatMulOp op,
+    //构造函数
+    
+    
+    LogicalResult (mma::MatMulOp op,
                                   PatternRewriter &rewriter)const override{
         auto loc = op->getLoc();
         Value A=op->getOperand(0);
